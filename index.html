@@ -43,6 +43,8 @@
         const btnText = document.getElementById('btn-text');
         const spinner = document.getElementById('spinner');
 
+        const API_URL = "https://breast-cancer-detector-6u60.onrender.com/predict"; // Your Render backend URL
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             resultDiv.innerHTML = '';
@@ -59,9 +61,7 @@
             };
 
             try {
-               const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api/predict";
-
-               const response = await fetch(API_URL, {
+                const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
