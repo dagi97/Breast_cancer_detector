@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Breast Cancer Prediction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-100 to-purple-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-md">
+        <h1 class="text-3xl font-bold mb-8 text-center text-purple-700">Breast Cancer Predictor</h1>
+        <form id="predict-form" class="space-y-5">
+            <div>
+                <label class="block mb-1 font-medium">Radius Mean</label>
+                <input type="number" step="any" name="radius_mean" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-300 focus:outline-none" required>
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">Texture Mean</label>
+                <input type="number" step="any" name="texture_mean" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-300 focus:outline-none" required>
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">Perimeter Mean</label>
+                <input type="number" step="any" name="perimeter_mean" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-300 focus:outline-none" required>
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">Area Mean</label>
+                <input type="number" step="any" name="area_mean" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-300 focus:outline-none" required>
+            </div>
+            <button type="submit" id="predict-btn" class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition flex justify-center items-center">
+                <span id="btn-text">Predict</span>
+                <svg id="spinner" class="hidden animate-spin ml-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+            </button>
+        </form>
+        <div id="result" class="mt-6 text-center text-xl font-semibold"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('predict-form');
+        const resultDiv = document.getElementById('result');
+        const predictBtn = document.getElementById('predict-btn');
+        const btnText = document.getElementById('btn-text');
+        const spinner = document.getElementById('spinner');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            resultDiv.innerHTML = '';
+            predictBtn.disabled = true;
+            btnText.innerText = 'Predicting...';
+            spinner.classList.remove('hidden');
+
+            const formData = new FormData(form);
+            const data = {
+                radius_mean: parseFloat(formData.get('radius_mean')),
+                texture_mean: parseFloat(formData.get('texture_mean')),
+                perimeter_mean: parseFloat(formData.get('perimeter_mean')),
+                area_mean: parseFloat(formData.get('area_mean'))
+            };
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                const dtColor = result.decision_tree_prediction === 'Malignant' ? 'text-red-600' : 'text-green-600';
+                const lrColor = result.logistic_regression_prediction === 'Malignant' ? 'text-red-600' : 'text-green-600';
+
+                resultDiv.innerHTML = `
+                    <p class="${dtColor}">Decision Tree: <strong>${result.decision_tree_prediction}</strong></p>
+                    <p class="${lrColor}">Logistic Regression: <strong>${result.logistic_regression_prediction}</strong></p>
+                `;
+            } catch (error) {
+                resultDiv.innerText = 'Error: Could not get prediction.';
+            }
+
+            predictBtn.disabled = false;
+            btnText.innerText = 'Predict';
+            spinner.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
