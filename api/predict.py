@@ -1,11 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-import joblib
 import pandas as pd
+import joblib
 from fastapi.middleware.cors import CORSMiddleware
-
-dt_pipeline = joblib.load("models/dt_model.pkl")
-lr_pipeline = joblib.load("models/lr_model.pkl")
 
 app = FastAPI()
 
@@ -15,6 +12,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
+
+dt_pipeline = joblib.load("../backend/models/dt_model.pkl")
+lr_pipeline = joblib.load("../backend/models/lr_model.pkl")
 
 class Features(BaseModel):
     radius_mean: float
