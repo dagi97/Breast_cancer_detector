@@ -103,12 +103,23 @@ https://breast-cancer-detector-th46.vercel.app/
 
 ## Project Structure
 
-    Breast_cancer_detector/
-    ├── notebook/
-    ├── backend/
-    ├── frontend/
-    ├── data/
-    └── README.md
+Breast_cancer_detector/
+│
+├── notebook/
+│   └── breast_cancer_pipeline.ipynb
+│
+├── backend/
+│   ├── main.py
+│   └── models/
+│       ├── dt_model.pkl
+│       └── lr_model.pkl
+│
+├── data/
+│   └── breast_cancer_data.csv
+│
+├── index.html
+└── README.md
+
 
 ------------------------------------------------------------------------
 
