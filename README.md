@@ -106,8 +106,8 @@ https://breast-cancer-detector-th46.vercel.app/
     Breast_cancer_detector/
     ├── notebook/
     ├── backend/
-    ├── frontend/
     ├── data/
+    ├── index.html
     └── README.md
 
 ------------------------------------------------------------------------
